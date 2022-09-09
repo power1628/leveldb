@@ -14,6 +14,9 @@ if(NOT CMAKE_C_STANDARD)
   set(CMAKE_C_EXTENSIONS OFF)
 endif(NOT CMAKE_C_STANDARD)
 
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
+
+
 # C++ standard can be overridden when this is used as a sub-project.
 if(NOT CMAKE_CXX_STANDARD)
   # This project requires C++11.
@@ -442,6 +445,10 @@ if(LEVELDB_BUILD_BENCHMARKS)
     leveldb_benchmark("benchmarks/db_bench_sqlite3.cc")
     target_link_libraries(db_bench_sqlite3 sqlite3)
   endif(HAVE_SQLITE3)
+
+  find_package(Lmdb REQUIRED)
+  leveldb_benchmark("benchmarks/db_bench_mdb.cc")
+  target_link_libraries(db_bench_mdb ${Lmdb_LIBRARIES})
 
   # check_library_exists is insufficient here because the library names have
   # different manglings when compiled with clang or gcc, at least when installed
